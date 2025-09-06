@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Whiteboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dark-theme">
+    <div class="container">
+        <div class="toolbar">
+            <h1>Enhanced Whiteboard</h1>
+            <div class="center-tools">
+                <div class="tool-group">
+                    <div class="tooltip">
+                        <button id="dragBtn" class="tool-button" title="Hold to Pan"><i class="fas fa-hand-paper"></i></button>
+                        <span class="tooltip-text">Hold to Pan</span>
+                    </div>
+                </div>
+                
+                <div class="tool-group">
+                    <div class="dropdown">
+                        <div class="tooltip">
+                            <button class="dropdown-button" id="shapesDropdownBtn"><i class="fas fa-shapes"></i></button>
+                            <span class="tooltip-text">Shapes</span>
+                        </div>
+                        <div class="dropdown-content" id="shapesDropdown">
+                            <div class="tooltip">
+                                <button id="drawBtn" class="tool-button active"><i class="fas fa-pen"></i></button>
+                                <span class="tooltip-text">Draw</span>
+                            </div>
+                            <div class="tooltip">
+                                <button id="rectangleBtn" class="tool-button"><i class="fas fa-square"></i></button>
+                                <span class="tooltip-text">Rectangle</span>
+                            </div>
+                            <div class="tooltip">
+                                <button id="circleBtn" class="tool-button"><i class="fas fa-circle"></i></button>
+                                <span class="tooltip-text">Circle</span>
+                            </div>
+                            <div class="tooltip">
+                                <button id="triangleBtn" class="tool-button"><i class="fas fa-play fa-rotate-270"></i></button>
+                                <span class="tooltip-text">Triangle</span>
+                            </div>
+                            <div class="tooltip">
+                                <button id="trapeziumBtn" class="tool-button"><i class="fas fa-bring-front"></i></button>
+                                <span class="tooltip-text">Trapezium</span>
+                            </div>
+                            <div class="tooltip">
+                                <button id="lineBtn" class="tool-button"><i class="fas fa-minus"></i></button>
+                                <span class="tooltip-text">Line</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="color-picker-container">
+                        <div class="tooltip">
+                            <div class="color-option active" style="background-color: #ffffff;" data-color="#ffffff"></div>
+                            <span class="tooltip-text">White</span>
+                        </div>
+                        <div class="tooltip">
+                            <div class="color-option" style="background-color: #000000;" data-color="#000000"></div>
+                            <span class="tooltip-text">Black</span>
+                        </div>
+                        <div class="tooltip">
+                            <div class="color-option" style="background-color: #ff5f56;" data-color="#ff5f56"></div>
+                            <span class="tooltip-text">Red</span>
+                        </div>
+                        <div class="tooltip">
+                            <div class="color-option" style="background-color: #5fd7ff;" data-color="#5fd7ff"></div>
+                            <span class="tooltip-text">Blue</span>
+                        </div>
+                        <div class="tooltip">
+                            <div class="color-option" style="background-color: #5fff7a;" data-color="#5fff7a"></div>
+                            <span class="tooltip-text">Green</span>
+                        </div>
+                        <div class="tooltip">
+                            <div class="color-option" style="background-color: #ffdb5f;" data-color="#ffdb5f"></div>
+                            <span class="tooltip-text">Yellow</span>
+                        </div>
+                        <div class="tooltip">
+                            <div class="color-option" style="background-color: #fb6124;" data-color="#fb6124"></div>
+                            <span class="tooltip-text">Orange</span>
+                        </div>
+                        <div class="tooltip">
+                            <div class="color-option" style="background-color: #a256ff;" data-color="#a256ff"></div>
+                            <span class="tooltip-text">Purple</span>
+                        </div>
+                    </div>
+                    
+                    <div class="brush-size">
+                        <span><i class="fas fa-brush"></i></span>
+                        <input type="range" id="brushSize" min="1" max="50" value="5">
+                    </div>
+                </div>
+                
+                <div class="tool-group">
+                    <div class="dropdown">
+                        <div class="tooltip">
+                            <button class="dropdown-button" id="themesDropdownBtn"><i class="fas fa-palette"></i></button>
+                            <span class="tooltip-text">Themes</span>
+                        </div>
+                        <div class="dropdown-content" id="themesDropdown">
+                            <div class="tooltip">
+                                <div id="themeDark" class="theme-button active"></div>
+                                <span class="tooltip-text">Dark Theme</span>
+                            </div>
+                            <div class="tooltip">
+                                <div id="themeLight" class="theme-button"></div>
+                                <span class="tooltip-text">Light Theme</span>
+                            </div>
+                            <div class="tooltip">
+                                <div id="themeCosmic" class="theme-button"></div>
+                                <span class="tooltip-text">Cosmic Theme</span>
+                            </div>
+                            <div class="tooltip">
+                                <div id="themeRetro" class="theme-button"></div>
+                                <span class="tooltip-text">Retro Theme</span>
+                            </div>
+                            <div class="tooltip">
+                                <div id="themeMaximalist" class="theme-button"></div>
+                                <span class="tooltip-text">Maximalist Theme</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="clearBtn" class="action-button"><i class="fas fa-trash-alt"></i> Clear</button>
+                </div>
+            </div>
+            
+            <div class="right-tools">
+                 <div class="tooltip">
+                    <button class="tool-button" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
+                    <span class="tooltip-text">Fullscreen</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="whiteboard"></canvas>
+            <div class="coordinates" id="coordinates">X: 0, Y: 0 | Scale: 1.00</div>
+        </div>
+        
+        <div class="zoom-controls">
+            <div class="tooltip">
+                <div class="zoom-btn" id="zoomIn"><i class="fas fa-plus"></i></div>
+                <span class="tooltip-text">Zoom In</span>
+            </div>
+            <div class="tooltip">
+                <div class="zoom-btn" id="zoomOut"><i class="fas fa-minus"></i></div>
+                <span class="tooltip-text">Zoom Out</span>
+            </div>
+            <div class="tooltip">
+                <div class="zoom-btn" id="resetView"><i class="fas fa-sync-alt"></i></div>
+                <span class="tooltip-text">Reset View</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
