@@ -1,15 +1,19 @@
+/* App.js */
+
 const { useState, useEffect } = React;
 
 /* Main App */
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Changed to true for logged-in state
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [activeView, setActiveView] = useState('dashboard');
+  const [activeView, setActiveView] = useState('projects'); // Changed default view to projects
   const [authView, setAuthView] = useState('login');
   const [isDarkMode, setIsDarkMode] = useState(true);
   
-  const [user, setUser] = useState(null);
+  // Set the user directly here instead of logging in
+  const [user, setUser] = useState({ name: 'Justin Mason', email: 'justin.mason@example.com', initials: 'JM' });
+
   const [isCreatingProject, setIsCreatingProject] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -44,7 +48,7 @@ function App() {
   const handleLogout = () => {
     setUser(null);
     setIsLoggedIn(false);
-    setActiveView('dashboard');
+    setActiveView('projects'); // Changed default view to projects
   };
 
   const handleSaveProject = (projectData) => {
@@ -106,8 +110,6 @@ function App() {
           toggleTheme={toggleTheme}
         />
         <main className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ease-in-out ${isCollapsed ? 'md:ml-16' : 'md:ml-64'} ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-          {activeView === 'dashboard' && <h2 className={`text-2xl font-bold mb-6 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Dashboard Content Here</h2>}
-          
           {activeView === 'projects' && (
             isCreatingProject || editingProject ? (
               <ProjectForm 
@@ -130,7 +132,6 @@ function App() {
           )}
           
           {activeView === 'team' && <TeamPage isDarkMode={isDarkMode} />}
-          {activeView === 'settings' && <h2 className="text-2xl font-bold mb-6 text-gray-200">Settings Page Content</h2>}
         </main>
       </div>
     </div>

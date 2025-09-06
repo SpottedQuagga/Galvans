@@ -1,3 +1,5 @@
+/* Components.js */
+
 const { useState, useEffect } = React;
 
 /* Single call to Feather Icons to improve performance */
@@ -61,10 +63,8 @@ function Sidebar({ isCollapsed, toggleSidebar, user, isMobile, activeView, setAc
       
       <div className="flex-1 overflow-y-auto py-4">
         <nav>
-          <SidebarItem icon="home" text="Dashboard" viewName="dashboard" activeView={activeView} setActiveView={setActiveView} isCollapsed={isCollapsed} isDarkMode={isDarkMode} />
           <SidebarItem icon="briefcase" text="Projects" viewName="projects" activeView={activeView} setActiveView={setActiveView} isCollapsed={isCollapsed} isDarkMode={isDarkMode} />
           <SidebarItem icon="users" text="Team" viewName="team" activeView={activeView} setActiveView={setActiveView} isCollapsed={isCollapsed} isDarkMode={isDarkMode} />
-          <SidebarItem icon="settings" text="Settings" viewName="settings" activeView={activeView} setActiveView={setActiveView} isCollapsed={isCollapsed} isDarkMode={isDarkMode} />
         </nav>
       </div>
       
