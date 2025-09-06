@@ -79,6 +79,14 @@ function Sidebar({ isCollapsed, toggleSidebar, user, isMobile, activeView, setAc
               <p className={`text-xs ${theme.textSecondary} truncate`}>{user.email}</p>
             </div>
           )}
+          {/* Theme toggle button relocated here */}
+          {!isCollapsed && (
+            <div className="ml-auto">
+              <button onClick={toggleTheme} className={`p-2 rounded-full ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'}`}>
+                <i data-feather={isDarkMode ? 'sun' : 'moon'}></i>
+              </button>
+            </div>
+          )}
         </div>
       )}
       {!isCollapsed && (
@@ -89,10 +97,8 @@ function Sidebar({ isCollapsed, toggleSidebar, user, isMobile, activeView, setAc
           </button>
         </div>
       )}
-      <div className={`p-4 border-t ${theme.border} flex justify-center`}>
-        <button onClick={toggleTheme} className={`p-2 rounded-full ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'}`}>
-          <i data-feather={isDarkMode ? 'sun' : 'moon'}></i>
-        </button>
+      <div className={`p-4 border-t ${theme.border}`}>
+        {/* This is the new blank space */}
       </div>
     </div>
   );
@@ -143,6 +149,11 @@ function Topbar({ toggleSidebar, isMobile, onNewProjectClick, isDarkMode }) {
         </div>
       </div>
       <div className="flex items-center space-x-4">
+        {/* New Whiteboard Button as a hyperlink */}
+        <a href="index.html" target="_blank" className={`${theme.accentBg} ${theme.accentHover} ${theme.accentText} px-4 py-2 rounded-lg flex items-center`}>
+          <i data-feather="edit" className="mr-2 w-4 h-4"></i>
+          <span className="hidden sm:block">Whiteboard</span>
+        </a>
         <button onClick={onNewProjectClick} className={`${theme.accentBg} ${theme.accentHover} ${theme.accentText} px-4 py-2 rounded-lg flex items-center`}>
           <i data-feather="plus" className="mr-2 w-4 h-4"></i>
           <span className="hidden sm:block">New Project</span>
@@ -312,17 +323,6 @@ function ProjectForm({ project, onSave, onCancel, isDarkMode }) {
         </div>
         
         <div>
-          <label htmlFor="deadline" className={`block text-sm font-medium ${theme.textSecondary}`}>Deadline</label>
-          <input
-            type="date"
-            id="deadline"
-            value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
-            className={`w-full mt-1 p-2 rounded-lg ${theme.bgHover} ${theme.textPrimary} border ${theme.border} focus:outline-none focus:ring-2 focus:ring-${theme.accentColor}-500`}
-          />
-        </div>
-
-        <div>
           <label className={`block text-sm font-medium ${theme.textSecondary}`}>Priority</label>
           <div className="mt-2 flex items-center space-x-6">
             {['Low', 'Medium', 'High'].map(p => (
@@ -434,7 +434,8 @@ function LoginScreen({ onLoginSuccess, onNavigateToSignUp, onBypassLogin, isDark
     setError('');
 
     try {
-      const response = await fetch('https://your-backend-api.com/login', {
+      // Connect to your local backend API
+      const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -443,6 +444,9 @@ function LoginScreen({ onLoginSuccess, onNavigateToSignUp, onBypassLogin, isDark
       const data = await response.json();
 
       if (response.ok) {
+        // Store the JWT token for future authenticated requests
+        localStorage.setItem('token', data.token);
+        // Pass user data to App component
         onLoginSuccess(data.user);
       } else {
         setError(data.message || 'Invalid credentials. Please try again.');
@@ -525,21 +529,110 @@ function LoginScreen({ onLoginSuccess, onNavigateToSignUp, onBypassLogin, isDark
   );
 }
 
-/* Placeholder for SignUpScreen */
-function SignUpScreen({ onNavigateToLogin, isDarkMode }) {
+/* New SignUpScreen Component */
+function SignUpScreen({ onLoginSuccess, onNavigateToLogin, isDarkMode }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const theme = getThemeColors(isDarkMode);
+  
+  useFeatherIcons();
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      // Simulate API call for sign-up
+      const response = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        onLoginSuccess(data.user);
+      } else {
+        setError(data.message || 'Sign up failed. Please try again.');
+      }
+    } catch (err) {
+      setError('Failed to connect to the server. Please check your network.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className={`min-h-screen ${theme.bgPrimary} flex items-center justify-center`}>
-      <div className={`p-8 text-center ${theme.bgSecondary} ${theme.textPrimary} rounded-lg shadow-md`}>
-        <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
-        <p>This is the sign-up page.</p>
-        <button onClick={onNavigateToLogin} className={`mt-4 px-4 py-2 ${theme.accentBg} ${theme.accentText} rounded-lg ${theme.accentHover}`}>
-          Go to Login
-        </button>
+    <div className={`min-h-screen ${theme.bgPrimary} flex items-center justify-center p-4`}>
+      <div className={`${theme.bgSecondary} rounded-2xl shadow-xl w-full max-w-sm overflow-hidden transform hover:scale-105 transition-transform duration-300`}>
+        <div className="p-8">
+          <h2 className={`text-center text-3xl font-bold ${theme.textPrimary} mb-6`}>Create Account</h2>
+          <form className="space-y-6" onSubmit={handleSignUp}>
+            <div className="relative">
+              <i data-feather="user" className={`w-5 h-5 ${theme.textSecondary} absolute left-3 top-1/2 -translate-y-1/2`}></i>
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={`w-full pl-10 pr-4 py-2 rounded-lg ${theme.bgHover} ${theme.textPrimary} border ${theme.border} focus:outline-none focus:ring-2 focus:ring-${theme.accentColor}-500 focus:border-transparent`}
+                required
+              />
+            </div>
+            <div className="relative">
+              <i data-feather="mail" className={`w-5 h-5 ${theme.textSecondary} absolute left-3 top-1/2 -translate-y-1/2`}></i>
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={`w-full pl-10 pr-4 py-2 rounded-lg ${theme.bgHover} ${theme.textPrimary} border ${theme.border} focus:outline-none focus:ring-2 focus:ring-${theme.accentColor}-500 focus:border-transparent`}
+                required
+              />
+            </div>
+            <div className="relative">
+              <i data-feather="lock" className={`w-5 h-5 ${theme.textSecondary} absolute left-3 top-1/2 -translate-y-1/2`}></i>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`w-full pl-10 pr-4 py-2 rounded-lg ${theme.bgHover} ${theme.textPrimary} border ${theme.border} focus:outline-none focus:ring-2 focus:ring-${theme.accentColor}-500 focus:border-transparent`}
+                required
+              />
+            </div>
+            
+            {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
+            
+            <div className="flex flex-col space-y-3">
+              <button
+                type="submit"
+                className={`w-full ${theme.accentBg} ${theme.accentText} py-2 rounded-lg font-semibold ${theme.accentHover} transition duration-300 ease-in-out shadow-md hover:shadow-lg disabled:opacity-50`}
+                disabled={loading}
+              >
+                {loading ? 'Signing Up...' : 'Sign Up'}
+              </button>
+              <button
+                type="button"
+                onClick={onNavigateToLogin}
+                className={`w-full ${theme.bgHover} ${theme.textPrimary} py-2 rounded-lg font-semibold transition duration-300 ease-in-out`}
+              >
+                Back to Login
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
 }
+
 
 // New TeamPage component
 function TeamPage({ isDarkMode }) {
@@ -561,7 +654,7 @@ function TeamPage({ isDarkMode }) {
 
     try {
       // Simulate API call to invite a member
-      const response = await fetch('https://your-backend-api.com/invite', {
+      const response = await fetch('http://localhost:5000/api/team/invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: newMemberEmail }),
