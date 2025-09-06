@@ -1,0 +1,17 @@
+/* Sidebar transition */
+.sidebar-transition {
+  transition: width 0.3s ease, min-width 0.3s ease;
+  overflow: hidden;
+}
+
+/* Hover effect for task cards */
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Task status styles */
+.status-todo { background-color: #fef3c7; color: #92400e; }
+.status-progress { background-color: #bfdbfe; color: #1e40af; }
+.status-done { background-color: #d1fae5; color: #065f46; }
